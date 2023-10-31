@@ -98,14 +98,14 @@
     (oav-u (objeto ?nombre) (atributo edad))
     (not (oav-u(objeto ?nombre) (atributo diagnostico)) )
     =>
-    (printout t ?nombre " no tiene ninguna enfermedad registrada")
+    (printout t ?nombre " no tiene ninguna enfermedad registrada" crlf)
 )
 
 (defrule comunicar-diagnostico "Comunicar el diagnostico"
     (oav-u (objeto ?nombre) (atributo diagnostico) (valor ?x))
     (oav-u (objeto ?x) (atributo afecta) (valor ?y))
     =>
-    (printout t ?nombre " tiene " ?x " , que es una enfermedad de tipo cardiovascular y afecta a " ?y)
+    (printout t ?nombre " tiene " ?x " , que es una enfermedad de tipo cardiovascular y afecta a " ?y crlf)
 )
 
 (defrule verificar-semantica-univaluada
