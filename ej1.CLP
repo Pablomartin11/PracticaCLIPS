@@ -12,8 +12,9 @@
 )
 
 (defrule verificar-semantica-univaluada
-   ?x1 <- (oav-u (objeto ?nombre) (atributo ?edad) (valor ?valor1))
-   ?x2 <- (oav-u (objeto ?nombre) (atributo ?edad) (valor ?valor2&:(!= ?valor2 ?valor1)))
+   ?x <- (oav-u (objeto ?nombre) (atributo ?edad) (valor ?valor1))
+   ?y <- (oav-u (objeto ?nombre) (atributo ?edad) (valor ?valor2))
+   (test (< (fact-index ?x) (fact-index ?y)))
    =>
-   (retract ?x2)
+   (retract ?x)
 )
