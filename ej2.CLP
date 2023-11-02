@@ -18,16 +18,16 @@
     (oav-u (objeto Maria) (atributo edad) (valor 10))
     (oav-u (objeto Maria) (atributo annosFumando) (valor 0))
     (oav-m (objeto Maria) (atributo sintomas) (valor dolorPecho))
-    (oav-m (objeto Maria) (atributo evidencia) (valor rumorDiasolico))
+    (oav-m (objeto Maria) (atributo evidencias) (valor rumorDiasolico))
     (oav-u (objeto Maria) (atributo presionSistolica) (valor 130))
     (oav-u (objeto Maria) (atributo presionDiastolica) (valor 60))
 
     (oav-u (objeto Pedro) (atributo sexo) (valor hombre))
     (oav-u (objeto Pedro) (atributo edad) (valor 70))
-    (oav-u (objeto Pedro) (atributo añosFumando) (valor 6))
+    (oav-u (objeto Pedro) (atributo annosFumando) (valor 6))
     (oav-m (objeto Pedro) (atributo sintomas) (valor calambresPiernas))
-    (oav-m (objeto Pedro) (atributo evidencia) (valor rumorSistolico))
-    (oav-m (objeto Pedro) (atributo evidencia) (valor dilatacionCora))
+    (oav-m (objeto Pedro) (atributo evidencias) (valor rumorSistolico))
+    (oav-m (objeto Pedro) (atributo evidencias) (valor dilatacionCora))
     (oav-u (objeto Pedro) (atributo presionSistolica) (valor 150))
     (oav-u (objeto Pedro) (atributo presionDiastolica) (valor 95))
 
@@ -56,20 +56,22 @@
     (oav-u (objeto ?nombre) (atributo presionSistolica) (valor ?numPresSis))
     (oav-u (objeto ?nombre) (atributo presionDiastolica) (valor ?numPresDia))
     =>
-    (assert (objeto ?nombre) (atributo presionPulso) (valor (- ?numPresSis ?numPresDia)))
+    (assert (oav-u (objeto ?nombre) (atributo presionPulso) (valor (- ?numPresSis ?numPresDia))))
 )
 
 (defrule diagnostico-Aneurisma "Deteccion de aneurisma"
-    (oav-m (objeto ?nombre) (atributo sintoma) (valor dolorAbdominal))
-    (oav-m (objeto ?nombre) (atributo evidencia) (valor rumorAbdominal | masaPulsante))
+    (oav-m (objeto ?nombre) (atributo sintomas) (valor dolorAbdominal))
+    (oav-m (objeto ?nombre) (atributo evidencias) (valor rumorAbdominal))
+    (and (oav-m (objeto ?nombre) (atributo evidencias) (valor masaPulsante)))
     =>
-    (assert (objeto ?nombre) (atributo diagnostico) (valor Aneurisma))
+    (assert (oav-m (objeto ?nombre) (atributo diagnostico) (valor Aneurisma)))
 )
 
 (defrule diagnostico-EstenosisArterial "Deteccion de Estenosis Arterial"
-    (oav-m (objeto ?nombre) (atributo sintoma) (valor calambresPiernas))
+    (declare (salience 6000))
+    (oav-m (objeto ?nombre) (atributo sintomas) (valor calambresPiernas))
     =>
-    (assert (objeto ?nombre) (atributo diagnostico) (valor EstenosisArterial))
+    (assert (oav-m (objeto ?nombre) (atributo diagnostico) (valor EstenosisArterial)))
 )
 
 (defrule diagnostico-Arteriosclerosis "Deteccion de Arteriosclerosis"
@@ -77,32 +79,33 @@
     (oav-u (objeto ?nombre) (atributo annosFumando) (valor ?annos))
     (oav-u (objeto ?nombre) (atributo edad) (valor ?numeroEdad))
 
-    (test (> ?annos 10))
-    (test (> ?numeroEdad 55))
+    (or (test (> ?annos 10)) (test (> ?numeroEdad 55)))
     =>
-    (assert (objeto ?nombre) (atributo diagnostico) (valor Arteriosclerosis))
+    (assert (oav-m (objeto ?nombre) (atributo diagnostico) (valor Arteriosclerosis)))
 )
 
 (defrule diagnostico-Regurgitacion "Deteccion de Regurgitacion Aortica"
-    (oav-m (objeto ?nombre) (atributo evidencia) (valor rumorSistolico | dilatacionCorazon))
+    (oav-m (objeto ?nombre) (atributo evidencias) (valor rumorSistolico | dilatacionCorazon))
     (oav-u (objeto ?nombre) (atributo presionSistolica) (valor ?numPresSis))
     (oav-u (objeto ?nombre) (atributo presionPulso) (valor ?numPresPul))
 
     (test (> ?numPresSis 130))
     (test (> ?numPresPul 50))
     =>
-    (assert (objeto ?nombre) (atributo diagnostico) (valor Regurgitacion))
+    (assert (oav-m (objeto ?nombre) (atributo diagnostico) (valor Regurgitacion)))
 )
 
 (defrule no-diagnostico "No tiene diagnostico"
+    (declare (salience -5000))
     (oav-u (objeto ?nombre) (atributo edad))
-    (not (oav-u(objeto ?nombre) (atributo diagnostico)) )
+    (not (oav-m (objeto ?nombre) (atributo diagnostico)) )
     =>
     (printout t ?nombre " no tiene ninguna enfermedad registrada" crlf)
 )
 
 (defrule comunicar-diagnostico "Comunicar el diagnostico"
-    (oav-u (objeto ?nombre) (atributo diagnostico) (valor ?x))
+    (declare (salience -5000))
+    (oav-m (objeto ?nombre) (atributo diagnostico) (valor ?x))
     (oav-u (objeto ?x) (atributo afecta) (valor ?y))
     =>
     (printout t ?nombre " tiene " ?x " , que es una enfermedad de tipo cardiovascular y afecta a " ?y crlf)
