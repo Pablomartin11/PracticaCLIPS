@@ -18,7 +18,7 @@
     (oav-u (objeto Maria) (atributo edad) (valor 10))
     (oav-u (objeto Maria) (atributo annosFumando) (valor 0))
     (oav-m (objeto Maria) (atributo sintomas) (valor dolorPecho))
-    (oav-m (objeto Maria) (atributo evidencias) (valor rumorDiasolico))
+    (oav-m (objeto Maria) (atributo evidencias) (valor rumorDiastolico))
     (oav-u (objeto Maria) (atributo presionSistolica) (valor 130))
     (oav-u (objeto Maria) (atributo presionDiastolica) (valor 60))
 
@@ -33,7 +33,7 @@
 
 )
 
-; Definimos los hechso para las enfermedades.
+; Definimos los hechos para las enfermedades.
 (deffacts hechos-sobre-las-enfermedades
     (oav-u (objeto Aneurisma) (atributo afecta) (valor vasosSanguineos))
     (oav-m (objeto Aneurisma) (atributo sintoma) (valor dolorAbdominal))
@@ -62,7 +62,7 @@
 (defrule diagnostico-Aneurisma "Deteccion de aneurisma"
     (oav-m (objeto ?nombre) (atributo sintomas) (valor dolorAbdominal))
     (oav-m (objeto ?nombre) (atributo evidencias) (valor rumorAbdominal))
-    (and (oav-m (objeto ?nombre) (atributo evidencias) (valor masaPulsante)))
+    (oav-m (objeto ?nombre) (atributo evidencias) (valor masaPulsante))
     =>
     (assert (oav-m (objeto ?nombre) (atributo diagnostico) (valor Aneurisma)))
 )
@@ -108,7 +108,7 @@
     (oav-m (objeto ?nombre) (atributo diagnostico) (valor ?x))
     (oav-u (objeto ?x) (atributo afecta) (valor ?y))
     =>
-    (printout t ?nombre " tiene " ?x " , que es una enfermedad de tipo cardiovascular y afecta a " ?y crlf)
+    (printout t ?nombre " tiene " ?x ", que es una enfermedad de tipo cardiovascular y afecta a" ?y crlf)
 )
 
 (defrule verificar-semantica-univaluada
